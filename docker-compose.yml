@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ./
+      dockerfile: .docker/frontend.dockerfile
+    ports:
+      - 80:80
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50M"
+        max-file: "1"
+  proxy:
+    container_name: proxy
+    build:
+      context: ./
+      dockerfile: .docker/proxy.dockerfile
+    ports:
+      - 81:5000
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50M"
+        max-file: "1"

@@ -1,7 +1,7 @@
-import { TextField, Box, Button, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, StylesProvider, IconButton } from '@material-ui/core';
+import { Box, Button, IconButton, Paper, StylesProvider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@material-ui/core';
+import { Refresh } from '@material-ui/icons';
 import { HttpTequilapiClient, IdentityRef, NodeHealthcheck, ServiceInfo, SessionStatsAggregatedResponse, TequilapiClient, TequilapiClientFactory, TequilapiError } from 'mysterium-vpn-js';
 import { useEffect, useState } from 'react';
-import { Refresh, PlayArrow, Stop } from '@material-ui/icons';
 import './App.css';
 
 interface nodeData {
@@ -85,7 +85,7 @@ function App() {
   async function checkNodeAPI(nodeApi: TequilapiClient | null, ip: string, port: string, token: string): Promise<TequilapiClient> {
     // If it was retrived from localStorage and has no client we re-create it
     if (!(nodeApi instanceof HttpTequilapiClient)) {
-      nodeApi = new TequilapiClientFactory('http://localhost:5000/proxy/' + ip + '/' + port + '/tequilapi').build()
+      nodeApi = new TequilapiClientFactory('http://localhost:81/proxy/' + ip + '/' + port + '/tequilapi').build()
       nodeApi.authSetToken(token)
     }
     return nodeApi
@@ -103,7 +103,7 @@ function App() {
       }
     } else {
       // Create node client
-      nodeApi = new TequilapiClientFactory('http://localhost:5000/proxy/' + ip + '/' + port + '/tequilapi').build()
+      nodeApi = new TequilapiClientFactory('http://localhost:81/proxy/' + ip + '/' + port + '/tequilapi').build()
       // Retrieve token
       let response = await nodeApi.authAuthenticate({ username: "myst", password: password }, true)
       token = response.token
@@ -177,14 +177,15 @@ function App() {
           <TableCell>{nodes.get(key)!.health.version}</TableCell>
           <TableCell>{nodes.get(key)!.stats.stats.count}</TableCell>
           <TableCell>{sumTokens.toFixed(2)}</TableCell>
-          {apiLoaded ? (<TableCell>
+          <TableCell></TableCell>
+          {/* {apiLoaded ? (<TableCell>
             {nodes.get(key)!.services.length === 0 && <IconButton aria-label="start" onClick={() => startNode(key)}>
               <PlayArrow />
             </IconButton>}
             {nodes.get(key)!.services.length > 0 && <IconButton aria-label="stop" onClick={() => stopNode(key)}>
               <Stop />
             </IconButton>}
-          </TableCell>) : (<TableCell>No API loaded</TableCell>)}
+          </TableCell>) : (<TableCell>No API loaded</TableCell>)} */}
         </TableRow>)
     }
     else return <TableRow key={'row_'+i}></TableRow>
